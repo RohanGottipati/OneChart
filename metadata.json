@@ -1,0 +1,7 @@
+{
+  "name": "OneChart",
+  "description": "A HIPAA-compliant, product-grade AI medical scribe application powered by Gemini.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}
