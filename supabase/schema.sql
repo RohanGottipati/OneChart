@@ -70,66 +70,76 @@ to authenticated
 using ((select auth.uid()) = user_id)
 with check ((select auth.uid()) = user_id);
 
+drop policy if exists "Sessions are user-owned" on public.sessions;
 create policy "Sessions are user-owned" on public.sessions
 for all
-using (auth.uid() = user_id)
-with check (auth.uid() = user_id);
+to authenticated
+using ((select auth.uid()) = user_id)
+with check ((select auth.uid()) = user_id);
 
+drop policy if exists "Notes belong to user's sessions" on public.session_notes;
 create policy "Notes belong to user's sessions" on public.session_notes
 for all
+to authenticated
 using (
   exists (
     select 1 from public.sessions s
     where s.id = session_notes.session_id
-    and s.user_id = auth.uid()
+    and s.user_id = (select auth.uid())
   )
 )
 with check (
   exists (
     select 1 from public.sessions s
     where s.id = session_notes.session_id
-    and s.user_id = auth.uid()
+    and s.user_id = (select auth.uid())
   )
 );
 
+drop policy if exists "Transcripts belong to user's sessions" on public.session_transcripts;
 create policy "Transcripts belong to user's sessions" on public.session_transcripts
 for all
+to authenticated
 using (
   exists (
     select 1 from public.sessions s
     where s.id = session_transcripts.session_id
-    and s.user_id = auth.uid()
+    and s.user_id = (select auth.uid())
   )
 )
 with check (
   exists (
     select 1 from public.sessions s
     where s.id = session_transcripts.session_id
-    and s.user_id = auth.uid()
+    and s.user_id = (select auth.uid())
   )
 );
 
+drop policy if exists "Context belongs to user's sessions" on public.session_context;
 create policy "Context belongs to user's sessions" on public.session_context
 for all
+to authenticated
 using (
   exists (
     select 1 from public.sessions s
     where s.id = session_context.session_id
-    and s.user_id = auth.uid()
+    and s.user_id = (select auth.uid())
   )
 )
 with check (
   exists (
     select 1 from public.sessions s
     where s.id = session_context.session_id
-    and s.user_id = auth.uid()
+    and s.user_id = (select auth.uid())
   )
 );
 
+drop policy if exists "Profiles are user-owned" on public.profiles;
 create policy "Profiles are user-owned" on public.profiles
 for all
-using (auth.uid() = id)
-with check (auth.uid() = id);
+to authenticated
+using ((select auth.uid()) = id)
+with check ((select auth.uid()) = id);
 
 create or replace function public.handle_new_user()
 returns trigger
