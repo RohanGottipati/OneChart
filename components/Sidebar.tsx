@@ -1,5 +1,5 @@
 import React from 'react';
-import { PlusCircle, History, Mic2, Settings, Users, CheckSquare, Menu } from 'lucide-react';
+import { PlusCircle, History, Mic2, Settings, Users, CheckSquare, Menu, LogOut } from 'lucide-react';
 import { ViewState } from '../types';
 
 interface SidebarProps {
@@ -9,21 +9,24 @@ interface SidebarProps {
   isHistoryOpen: boolean;
   isOpenMobile: boolean;
   onCloseMobile: () => void;
+  userEmail?: string;
+  onSignOut: () => void;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ 
-  currentView, 
-  onChangeView, 
-  onToggleHistory, 
+const Sidebar: React.FC<SidebarProps> = ({
+  currentView,
+  onChangeView,
+  onToggleHistory,
   isHistoryOpen,
   isOpenMobile,
-  onCloseMobile
+  onCloseMobile,
+  userEmail,
+  onSignOut
 }) => {
   const navItemClass = (isActive: boolean) =>
-    `flex items-center gap-3 px-4 py-3 rounded-lg transition-colors duration-200 cursor-pointer ${
-      isActive
-        ? 'bg-brand-100 text-brand-700 font-semibold shadow-sm'
-        : 'text-slate-600 hover:bg-slate-50'
+    `flex items-center gap-3 px-4 py-3 rounded-lg transition-colors duration-200 cursor-pointer ${isActive
+      ? 'bg-brand-100 text-brand-700 font-semibold shadow-sm'
+      : 'text-slate-600 hover:bg-slate-50'
     }`;
 
   const handleNavClick = (view: ViewState) => {
@@ -35,7 +38,7 @@ const Sidebar: React.FC<SidebarProps> = ({
     <>
       {/* Mobile Overlay */}
       {isOpenMobile && (
-        <div 
+        <div
           className="fixed inset-0 bg-slate-900/50 z-40 md:hidden"
           onClick={onCloseMobile}
         />
@@ -54,7 +57,7 @@ const Sidebar: React.FC<SidebarProps> = ({
         </div>
 
         <nav className="flex-1 p-4 space-y-2">
-          <div 
+          <div
             className={navItemClass(currentView === 'new-visit')}
             onClick={() => handleNavClick('new-visit')}
           >
@@ -63,7 +66,7 @@ const Sidebar: React.FC<SidebarProps> = ({
           </div>
 
           {/* Toggle History Sidebar */}
-          <div 
+          <div
             className={navItemClass(isHistoryOpen)}
             onClick={() => {
               onToggleHistory();
@@ -74,7 +77,7 @@ const Sidebar: React.FC<SidebarProps> = ({
             <span>Past Visits</span>
           </div>
 
-          <div 
+          <div
             className={navItemClass(currentView === 'tasks')}
             onClick={() => handleNavClick('tasks')}
           >
@@ -82,7 +85,7 @@ const Sidebar: React.FC<SidebarProps> = ({
             <span>Actions</span>
           </div>
 
-          <div 
+          <div
             className={navItemClass(currentView === 'voice-suite')}
             onClick={() => handleNavClick('voice-suite')}
           >
@@ -92,7 +95,7 @@ const Sidebar: React.FC<SidebarProps> = ({
         </nav>
 
         <div className="p-4 border-t border-slate-100 space-y-2">
-          <div 
+          <div
             className={navItemClass(currentView === 'settings')}
             onClick={() => handleNavClick('settings')}
           >
@@ -103,17 +106,24 @@ const Sidebar: React.FC<SidebarProps> = ({
             <Users className="w-5 h-5" />
             <span>Partners</span>
           </div>
-          
+
           <div className="mt-4 px-4">
-               <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-brand-200 flex items-center justify-center text-brand-700 font-bold text-xs">
-                      DR
-                  </div>
-                  <div>
-                      <p className="text-sm font-medium text-slate-900">Dr. Smith</p>
-                      <p className="text-xs text-slate-500">Cardiology</p>
-                  </div>
-               </div>
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-full bg-brand-200 flex items-center justify-center text-brand-700 font-bold text-xs">
+                DR
+              </div>
+              <div>
+                <p className="text-sm font-medium text-slate-900">{userEmail?.split('@')[0] || 'User'}</p>
+                <p className="text-xs text-slate-500 overflow-hidden text-ellipsis w-32">{userEmail}</p>
+              </div>
+              <button
+                onClick={onSignOut}
+                className="ml-auto p-2 text-slate-400 hover:text-red-600 transition-colors"
+                title="Sign Out"
+              >
+                <LogOut className="w-4 h-4" />
+              </button>
+            </div>
           </div>
         </div>
       </div>

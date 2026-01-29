@@ -33,8 +33,20 @@ export interface Message {
   timestamp: Date;
 }
 
+export interface Profile {
+  id: string;
+  fullName: string;
+  email: string;
+  practice: string;
+  speciality: string;
+  phoneNumber: string;
+  practiceName: string;
+}
+
 export interface Session {
   id: string;
+  patientId?: string;
+  userId?: string;
   patientName: string;
   patientGender: string; // Changed from strict union to string to allow "Unknown" or edits
   date: Date;

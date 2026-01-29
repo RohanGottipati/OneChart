@@ -271,7 +271,7 @@ const SessionDetail: React.FC<SessionDetailProps> = ({ session, onBack, onUpdate
         );
 
         const newDoc: Document = {
-            id: Date.now().toString(),
+            id: crypto.randomUUID(),
             title: newDocType,
             type: newDocType,
             content: content,
@@ -303,7 +303,7 @@ const SessionDetail: React.FC<SessionDetailProps> = ({ session, onBack, onUpdate
   const handleOpalCreateDocFromChat = (content: string) => {
       const type = "Generated Doc"; 
       const newDoc: Document = {
-          id: Date.now().toString(),
+          id: crypto.randomUUID(),
           title: "New Document", 
           type: "Supplemental",
           content: content,
