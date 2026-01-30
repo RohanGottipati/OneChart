@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
-import { Search, Calendar, FileText, ChevronRight, X, Loader2 } from 'lucide-react';
+import { Search, Calendar, FileText, ChevronRight, X, Loader2, Trash2 } from 'lucide-react';
 import { Session } from '../types';
 
 interface SessionListSidebarProps {
   sessions: Session[];
   onSelectSession: (session: Session) => void;
   selectedSessionId?: string;
+  onDeleteSession?: (sessionId: string) => void;
 }
 
-const SessionListSidebar: React.FC<SessionListSidebarProps> = ({ sessions, onSelectSession, selectedSessionId }) => {
+const SessionListSidebar: React.FC<SessionListSidebarProps> = ({ sessions, onSelectSession, selectedSessionId, onDeleteSession }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [dateFilter, setDateFilter] = useState('');
 
@@ -67,18 +68,34 @@ const SessionListSidebar: React.FC<SessionListSidebarProps> = ({ sessions, onSel
               <div 
                 key={session.id}
                 onClick={() => onSelectSession(session)}
-                className={`p-3 rounded-lg cursor-pointer transition-all border ${
+                className={`group p-3 rounded-lg cursor-pointer transition-all border ${
                   selectedSessionId === session.id 
                     ? 'bg-brand-50 border-brand-200 shadow-sm' 
                     : 'border-transparent hover:bg-slate-50 hover:border-slate-100'
                 }`}
               >
                 <div className="flex justify-between items-start mb-1">
-                   <h3 className={`font-semibold text-sm ${selectedSessionId === session.id ? 'text-brand-700' : 'text-slate-700'} flex items-center gap-2`}>
+                   <div className={`font-semibold text-sm ${selectedSessionId === session.id ? 'text-brand-700' : 'text-slate-700'} flex items-center gap-2`}>
                       {session.patientName}
                       {session.status === 'processing' && <Loader2 className="w-3 h-3 animate-spin text-brand-500" />}
-                   </h3>
-                   <span className="text-[10px] text-slate-400">{session.date.toLocaleDateString(undefined, {month:'short', day:'numeric'})}</span>
+                   </div>
+                   <div className="flex items-center gap-2">
+                      <span className="text-[10px] text-slate-400">{session.date.toLocaleDateString(undefined, {month:'short', day:'numeric'})}</span>
+                      {session.status === 'processing' && onDeleteSession && (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (window.confirm('Delete this processing session?')) {
+                              onDeleteSession(session.id);
+                            }
+                          }}
+                          className="p-1 text-slate-300 hover:text-red-600 opacity-0 group-hover:opacity-100 transition-all"
+                          title="Delete processing session"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      )}
+                   </div>
                 </div>
                 <div className="flex items-center gap-2 text-xs text-slate-400">
                     <span className="flex items-center gap-1">

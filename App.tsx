@@ -660,6 +660,7 @@ const App: React.FC = () => {
             if (window.innerWidth < 768) setIsHistoryOpen(false);
           }}
           selectedSessionId={selectedSession?.id}
+          onDeleteSession={handleDeleteSession}
         />
       )}
 
